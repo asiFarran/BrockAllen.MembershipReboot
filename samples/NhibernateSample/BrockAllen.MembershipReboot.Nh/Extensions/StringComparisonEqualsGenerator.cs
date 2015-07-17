@@ -30,7 +30,7 @@
             IHqlExpressionVisitor visitor)
         {
             // Get the StringComparison argument.
-            var comparison = (StringComparison)(arguments[1].As<ConstantExpression>().Value);
+            var comparison = (StringComparison)(((ConstantExpression)arguments[1]).Value);
 
             if (comparison == StringComparison.CurrentCultureIgnoreCase
                 || comparison == StringComparison.InvariantCultureIgnoreCase

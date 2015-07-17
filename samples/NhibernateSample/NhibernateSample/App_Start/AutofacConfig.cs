@@ -34,7 +34,9 @@
             builder.RegisterGeneric(typeof(NhRepository<>)).As(typeof(IRepository<>));
             builder.RegisterGeneric(typeof(NhUserAccountRepository<>)).As(typeof(IUserAccountRepository<>));
             builder.RegisterGeneric(typeof(NhGroupRepository<>))
-                .As(typeof(IGroupRepository<>), typeof(QueryableGroupRepository<>));
+                .As(typeof(IGroupRepository<>));
+            builder.RegisterType(typeof(NhGroupRepository<NhGroup>))
+               .As(typeof(IGroupQuery));
             builder.Register(
                 context => new GroupService<NhGroup>("default", context.Resolve<IGroupRepository<NhGroup>>())).AsSelf();
             var container = builder.Build();

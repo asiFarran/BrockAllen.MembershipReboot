@@ -9,6 +9,7 @@
     using NHibernate;
 
     using NhibernateSample.ViewModels;
+    using System.Security.Claims;
 
     public class AccountController : Controller
     {
@@ -98,6 +99,32 @@
                 }
             }
             return this.View(model);
+        }
+
+        [Authorize]
+        public ActionResult AddClaim()
+        {
+            var a = HttpContext.User as ClaimsPrincipal;
+            var u = this.userAccountService.GetByUsername(a.Identity.Name);
+
+            using (var tx = this.session.BeginTransaction())
+            {
+                this.userAccountService.AddClaim(u.ID, ClaimTypes.Role, "admin");
+                this.userAccountService.AddClaim(u.ID, ClaimTypes.SerialNumber, "1234");
+                tx.Commit();
+            }
+
+            this.authenticationService.SignIn(u, true);
+            return this.View();
+        }
+
+        public ActionResult CheckClaims()
+        {
+            var a = HttpContext.User as ClaimsPrincipal;
+            var g = a.Claims;
+            var b = a.HasClaim("role", "admin");
+            var aa = a.IsInRole("admin");
+            return this.View();
         }
 
         public ActionResult SignOut()
